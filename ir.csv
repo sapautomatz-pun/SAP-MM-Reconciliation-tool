@@ -1,0 +1,5 @@
+PO,vendor,ir_date,invoice_amount
+PO1001,VendorA,2023-07-12,15000
+PO1002,VendorB,2023-07-14,22000
+PO1004,VendorD,2023-07-23,25000
+PO1005,VendorE,2023-07-30,30000
