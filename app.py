@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 
-st.title("SAP MM PO/GR/IR Reconciliation Tool")
+st.title("SAP MM PO/GR/IR Reconciliation Tool with Gen AI Summary")
 
 # Upload CSV files
 po_file = st.file_uploader("Upload PO File (po.csv)", type="csv")
@@ -33,15 +33,34 @@ if po_file and gr_file and ir_file:
     merged_df["missing_gr"] = merged_df["gr_date"].isna()
     merged_df["missing_ir"] = merged_df["ir_date"].isna()
 
-    # Display summary
+    # Display summary metrics
     st.subheader("Summary Metrics")
-    st.write(f"Total POs: {len(merged_df)}")
-    st.write(f"Missing GRs: {merged_df['missing_gr'].sum()}")
-    st.write(f"Missing IRs: {merged_df['missing_ir'].sum()}")
+    total_pos = len(merged_df)
+    missing_grs = merged_df["missing_gr"].sum()
+    missing_irs = merged_df["missing_ir"].sum()
+    avg_delivery_delay = merged_df["delivery_delay_days"].mean()
+    avg_invoice_delay = merged_df["invoice_delay_days"].mean()
 
-    # Show merged data
+    st.write(f"Total POs: {total_pos}")
+    st.write(f"Missing GRs: {missing_grs}")
+    st.write(f"Missing IRs: {missing_irs}")
+    st.write(f"Average Delivery Delay (days): {avg_delivery_delay:.2f}")
+    st.write(f"Average Invoice Delay (days): {avg_invoice_delay:.2f}")
+
+    # Display reconciled data
     st.subheader("Reconciled Data")
     st.dataframe(merged_df)
+
+    # Gen AI-powered summary (simulated)
+    st.subheader("🧠 Gen AI-Powered Summary")
+    ai_summary = f"""
+    📊 Summary Report:
+    Out of {total_pos} purchase orders, {missing_grs} are missing goods receipts and {missing_irs} are missing invoice receipts.
+    The average delivery delay is {avg_delivery_delay:.2f} days, indicating moderate delays in vendor deliveries.
+    The average invoice delay is {avg_invoice_delay:.2f} days, suggesting potential bottlenecks in invoice processing.
+    ✅ Recommendation: Follow up with vendors for missing GRs and streamline the IR process to improve efficiency.
+    """
+    st.info(ai_summary)
 
     # Download reconciled report
     def convert_df(df):
